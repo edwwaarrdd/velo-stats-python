@@ -63,6 +63,7 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_ROUTES = {
     "tasks.tasks.check_ride_distance": {"queue": "ride_distance_checks"},
+    "tasks.tasks.check_ride_weather": {"queue": "ride_weather_checks"},
 }
 
 LOGGING = {
