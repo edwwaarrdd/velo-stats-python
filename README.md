@@ -48,6 +48,7 @@ Data is persisted to a SQLite database at `data/db.sqlite3`.
 | Method | Path | Description |
 |---|---|---|
 | `GET` | `/_healthcheck` | Returns `{"message": "ok"}` with a 200 status if the app is up |
+| `GET` | `/rides/` | Returns every ride with its basic info, distance (from the cached station route), speed (distance ÷ duration), and cached weather, most recent first |
 | `GET` | `/rides/summary` | Returns aggregate stats across all rides: total rides, total/average/longest/shortest duration, and total/average distance |
 
 ## Console Commands
