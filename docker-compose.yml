@@ -54,3 +54,16 @@ services:
       - .:/app
     depends_on:
       - redis
+
+  worker-ride-weather:
+    build: .
+    command: ["celery", "-A", "config", "worker", "--loglevel=info", "-Q", "ride_weather_checks", "--concurrency=1"]
+    environment:
+      DJANGO_DEBUG: "false"
+      DJANGO_ALLOWED_HOSTS: "*"
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
