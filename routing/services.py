@@ -1,8 +1,10 @@
 import json
 import urllib.request
 
+from stations.models import Station
+
 from .interfaces import RouteService
-from .models import Coordinate, Route, TravelMode
+from .models import Coordinate, Route, StationRouteRecord, TravelMode
 
 OSRM_BASE_URL = "https://router.project-osrm.org"
 
@@ -33,3 +35,37 @@ class OsrmRouteService(RouteService):
             )
 
         return Route.from_osrm_route(payload["routes"][0])
+
+
+class CachedStationRouteService:
+    """Calculates routes between stations, caching results so a route between
+    the same pair of stations and travel mode is only ever calculated once."""
+
+    def __init__(self, route_service: RouteService):
+        self._route_service = route_service
+
+    def get_route(
+        self, origin: Station, destination: Station, mode: TravelMode
+    ) -> Route:
+        cached = StationRouteRecord.objects.filter(
+            origin_station_id=origin.station_id,
+            destination_station_id=destination.station_id,
+            mode=mode.value,
+        ).first()
+        if cached is not None:
+            return cached.to_route()
+
+        route = self._route_service.get_route(
+            Coordinate(lat=origin.lat, lon=origin.lon),
+            Coordinate(lat=destination.lat, lon=destination.lon),
+            mode,
+        )
+
+        StationRouteRecord.objects.create(
+            origin_station_id=origin.station_id,
+            destination_station_id=destination.station_id,
+            mode=mode.value,
+            distance_meters=route.distance_meters,
+            duration_seconds=route.duration_seconds,
+        )
+        return route
