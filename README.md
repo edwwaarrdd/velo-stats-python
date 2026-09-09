@@ -8,10 +8,11 @@ Django app for tracking Velo Antwerp bike-share stations, ride history, and rout
 docker compose up -d --build
 ```
 
-This starts three services:
+This starts four services:
 - `api` – Django app served by gunicorn on port `8000`
 - `redis` – broker/result backend for Celery
 - `worker` – Celery worker for background tasks
+- `worker-ride-distance` – Celery worker consuming the `ride_distance_checks` queue one task at a time, so calls to the free routing API are never made concurrently
 
 Verify the app is up and running:
 
@@ -60,6 +61,7 @@ docker compose exec api python manage.py <command>
 | `load_stations` | Fetches Velo Antwerp station information from the public GBFS feed and upserts it into the database |
 | `load_rides [--path PATH]` | Loads ride history from a JSON export (defaults to `data/rides.json`) and upserts it into the database |
 | `dispatch_test_task [--message MSG]` | Dispatches a test Celery task that logs a message from the worker, useful for verifying the Celery/Redis setup |
+| `check_ride_distances` | Dispatches a Celery task per unchecked ride to calculate and cache the distance between its origin and destination stations, one at a time via the `ride_distance_checks` queue |
 
 ### Verifying the Celery setup
 
