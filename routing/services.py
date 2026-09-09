@@ -6,7 +6,16 @@ from stations.models import Station
 from .interfaces import RouteService
 from .models import Coordinate, Route, StationRouteRecord, TravelMode
 
-OSRM_BASE_URL = "https://router.project-osrm.org"
+OSRM_BASE_URL = "https://routing.openstreetmap.de"
+
+# The OSRM demo server at router.project-osrm.org only hosts the car profile and
+# silently ignores the profile named in the URL, so every mode came back with car
+# driving times. FOSSGIS runs a separate instance per profile instead, and the
+# profile is selected by the host path rather than by the URL segment.
+OSRM_PROFILE_PATHS = {
+    TravelMode.BIKE: "routed-bike",
+    TravelMode.FOOT: "routed-foot",
+}
 
 
 class OsrmRouteService(RouteService):
@@ -21,7 +30,7 @@ class OsrmRouteService(RouteService):
     ) -> Route:
         # OSRM expects coordinates as "lon,lat", not "lat,lon".
         url = (
-            f"{self._base_url}/route/v1/{mode.value}/"
+            f"{self._base_url}/{OSRM_PROFILE_PATHS[mode]}/route/v1/{mode.value}/"
             f"{origin.lon},{origin.lat};{destination.lon},{destination.lat}"
             f"?overview=false"
         )

@@ -52,7 +52,7 @@ class OsrmRouteServiceTests(unittest.TestCase):
         service.get_route(self.origin, self.destination, TravelMode.FOOT)
 
         mock_urlopen.assert_called_once_with(
-            "https://example.invalid/route/v1/foot/"
+            "https://example.invalid/routed-foot/route/v1/foot/"
             "4.42065,51.21782;4.41,51.22?overview=false",
             timeout=5.0,
         )
@@ -65,7 +65,21 @@ class OsrmRouteServiceTests(unittest.TestCase):
         service.get_route(self.origin, self.destination, TravelMode.BIKE)
 
         called_url = mock_urlopen.call_args[0][0]
-        self.assertIn("/route/v1/bike/", called_url)
+        self.assertIn("/routed-bike/route/v1/bike/", called_url)
+
+    @patch("routing.services.urllib.request.urlopen")
+    def test_get_route_uses_a_separate_instance_per_travel_mode(self, mock_urlopen):
+        mock_urlopen.return_value = _fake_response(SAMPLE_PAYLOAD)
+        service = OsrmRouteService(base_url="https://example.invalid")
+
+        service.get_route(self.origin, self.destination, TravelMode.BIKE)
+        bike_url = mock_urlopen.call_args[0][0]
+
+        service.get_route(self.origin, self.destination, TravelMode.FOOT)
+        foot_url = mock_urlopen.call_args[0][0]
+
+        self.assertIn("/routed-bike/", bike_url)
+        self.assertIn("/routed-foot/", foot_url)
 
     @patch("routing.services.urllib.request.urlopen")
     def test_get_route_raises_when_osrm_reports_error(self, mock_urlopen):
