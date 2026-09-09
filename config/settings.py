@@ -11,6 +11,7 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 INSTALLED_APPS = [
     "stations",
+    "rides",
 ]
 
 MIDDLEWARE = [
