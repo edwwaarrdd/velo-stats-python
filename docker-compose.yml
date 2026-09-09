@@ -1,11 +1,14 @@
 services:
   api:
     build: .
+    command: ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--reload"]
     ports:
       - "8000:8000"
     environment:
       DJANGO_DEBUG: "false"
       DJANGO_ALLOWED_HOSTS: "*"
+    volumes:
+      - .:/app
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/_healthcheck')"]
       interval: 30s
