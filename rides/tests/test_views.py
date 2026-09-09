@@ -164,7 +164,6 @@ class RideListViewTests(TestCase):
         self.assertEqual(result["origin_station_code"], "001")
         self.assertEqual(result["destination_station_code"], "002")
         self.assertEqual(result["distance_meters"], 3000.0)
-        # 3km in the 15 minutes between check-out and check-in (0.25h) = 12 km/h
         self.assertEqual(result["speed_kmh"], 12.0)
         self.assertEqual(result["expected_duration_seconds"], 400.0)
         self.assertEqual(
@@ -248,7 +247,6 @@ class RideListViewTests(TestCase):
         result = response.json()["results"][0]
         self.assertEqual(result["expected_duration_seconds"], 400.0)
         self.assertEqual(result["actual_duration_seconds"], 300.0)
-        # 100 seconds faster than the router predicted
         self.assertEqual(result["duration_vs_expected_seconds"], -100.0)
 
     def test_reports_a_positive_delta_when_slower_than_expected(self):
