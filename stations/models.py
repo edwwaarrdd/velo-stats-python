@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Iterable, Iterator, Optional
 
+from django.db import models
+
 
 @dataclass(frozen=True)
 class Station:
@@ -49,3 +51,35 @@ class StationCollection:
 
     def all(self) -> list[Station]:
         return list(self._stations_by_id.values())
+
+
+class StationRecord(models.Model):
+    """Database entity persisting a Station."""
+
+    station_id = models.CharField(max_length=32, primary_key=True)
+    name = models.CharField(max_length=255)
+    short_name = models.CharField(max_length=32)
+    lat = models.FloatField()
+    lon = models.FloatField()
+    address = models.CharField(max_length=255)
+    post_code = models.CharField(max_length=16)
+    rental_methods = models.JSONField(default=list)
+    capacity = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.station_id} - {self.name}"
+
+    def to_station(self) -> Station:
+        return Station(
+            station_id=self.station_id,
+            name=self.name,
+            short_name=self.short_name,
+            lat=self.lat,
+            lon=self.lon,
+            address=self.address,
+            post_code=self.post_code,
+            rental_methods=list(self.rental_methods),
+            capacity=self.capacity,
+        )
