@@ -15,18 +15,21 @@ def _round(value):
     return round(value, 2) if value is not None else None
 
 
-def _with_distance(rides: QuerySet) -> QuerySet:
-    distance_subquery = StationRouteRecord.objects.filter(
+def _with_route(rides: QuerySet) -> QuerySet:
+    routes = StationRouteRecord.objects.filter(
         origin_station_id=OuterRef("origin_station_code"),
         destination_station_id=OuterRef("destination_station_code"),
         mode=TravelMode.BIKE.value,
-    ).values("distance_meters")[:1]
+    )
 
-    return rides.annotate(distance_meters=Subquery(distance_subquery))
+    return rides.annotate(
+        distance_meters=Subquery(routes.values("distance_meters")[:1]),
+        expected_duration_seconds=Subquery(routes.values("duration_seconds")[:1]),
+    )
 
 
 def ride_summary(request):
-    rides = _with_distance(RideRecord.objects.all())
+    rides = _with_route(RideRecord.objects.all())
 
     stats = rides.aggregate(
         total_rides=Count("ride_id"),
@@ -71,6 +74,21 @@ def _speed_kmh(ride: RideRecord):
     return _round((ride.distance_meters / 1000) / (ride.duration / 60))
 
 
+def _actual_duration_seconds(ride: RideRecord):
+    """Ride time to the second, since `duration` is only stored in whole minutes."""
+    if ride.checkin_time is None or ride.checkout_time is None:
+        return None
+    return _round((ride.checkin_time - ride.checkout_time).total_seconds())
+
+
+def _duration_vs_expected_seconds(ride: RideRecord):
+    """Actual minus expected: negative means faster than the router predicted."""
+    actual = _actual_duration_seconds(ride)
+    if actual is None or ride.expected_duration_seconds is None:
+        return None
+    return _round(actual - ride.expected_duration_seconds)
+
+
 def _serialize_ride(ride: RideRecord):
     return {
         "ride_id": ride.ride_id,
@@ -88,12 +106,15 @@ def _serialize_ride(ride: RideRecord):
         "checkin_time": ride.checkin_time,
         "distance_meters": ride.distance_meters,
         "speed_kmh": _speed_kmh(ride),
+        "expected_duration_seconds": _round(ride.expected_duration_seconds),
+        "actual_duration_seconds": _actual_duration_seconds(ride),
+        "duration_vs_expected_seconds": _duration_vs_expected_seconds(ride),
         "weather": _serialize_weather(ride),
     }
 
 
 def ride_list(request):
-    rides = _with_distance(RideRecord.objects.select_related("weather")).order_by(
+    rides = _with_route(RideRecord.objects.select_related("weather")).order_by(
         "-checkout_time"
     )
 

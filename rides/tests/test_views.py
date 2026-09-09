@@ -27,6 +27,7 @@ def _make_ride(
     origin_station_code,
     destination_station_code,
     checkout_time=None,
+    checkin_time=None,
 ):
     return RideRecord.objects.create(
         ride_id=ride_id,
@@ -41,7 +42,7 @@ def _make_ride(
         destination_station_code=destination_station_code,
         destination_station="Destination",
         destination_slot_id="2",
-        checkin_time=checkout_time or timezone.now(),
+        checkin_time=checkin_time or checkout_time or timezone.now(),
     )
 
 
@@ -164,6 +165,7 @@ class RideListViewTests(TestCase):
         self.assertEqual(result["distance_meters"], 3000.0)
         # 3km in 15 minutes (0.25h) = 12 km/h
         self.assertEqual(result["speed_kmh"], 12.0)
+        self.assertEqual(result["expected_duration_seconds"], 400.0)
         self.assertEqual(
             result["weather"],
             {
@@ -190,7 +192,62 @@ class RideListViewTests(TestCase):
         result = response.json()["results"][0]
         self.assertEqual(result["distance_meters"], None)
         self.assertEqual(result["speed_kmh"], None)
+        self.assertEqual(result["expected_duration_seconds"], None)
+        self.assertEqual(result["duration_vs_expected_seconds"], None)
         self.assertEqual(result["weather"], None)
+
+    def test_compares_actual_ride_time_against_the_expected_route_duration(self):
+        origin = _make_station("001")
+        destination = _make_station("002")
+        StationRouteRecord.objects.create(
+            origin_station=origin,
+            destination_station=destination,
+            mode=TravelMode.BIKE.value,
+            distance_meters=3000.0,
+            duration_seconds=400.0,
+        )
+        checkout_time = timezone.now()
+        _make_ride(
+            1,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
+            checkout_time=checkout_time,
+            checkin_time=checkout_time + datetime.timedelta(seconds=300),
+        )
+
+        response = self.client.get("/rides/")
+
+        result = response.json()["results"][0]
+        self.assertEqual(result["expected_duration_seconds"], 400.0)
+        self.assertEqual(result["actual_duration_seconds"], 300.0)
+        # 100 seconds faster than the router predicted
+        self.assertEqual(result["duration_vs_expected_seconds"], -100.0)
+
+    def test_reports_a_positive_delta_when_slower_than_expected(self):
+        origin = _make_station("001")
+        destination = _make_station("002")
+        StationRouteRecord.objects.create(
+            origin_station=origin,
+            destination_station=destination,
+            mode=TravelMode.BIKE.value,
+            distance_meters=3000.0,
+            duration_seconds=400.0,
+        )
+        checkout_time = timezone.now()
+        _make_ride(
+            1,
+            duration=10,
+            origin_station_code="001",
+            destination_station_code="002",
+            checkout_time=checkout_time,
+            checkin_time=checkout_time + datetime.timedelta(seconds=610),
+        )
+
+        response = self.client.get("/rides/")
+
+        result = response.json()["results"][0]
+        self.assertEqual(result["duration_vs_expected_seconds"], 210.0)
 
     def test_orders_rides_by_most_recent_checkout_first(self):
         older = timezone.now() - timezone.timedelta(days=1)
