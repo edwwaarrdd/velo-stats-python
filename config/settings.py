@@ -9,7 +9,9 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "false").lower() == "true"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
-INSTALLED_APPS = []
+INSTALLED_APPS = [
+    "stations",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -34,7 +36,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-DATABASES = {}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "data" / "db.sqlite3",
+    }
+}
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
