@@ -68,17 +68,18 @@ def _serialize_weather(ride: RideRecord):
     }
 
 
-def _speed_kmh(ride: RideRecord):
-    if ride.distance_meters is None or not ride.duration:
-        return None
-    return _round((ride.distance_meters / 1000) / (ride.duration / 60))
-
-
 def _actual_duration_seconds(ride: RideRecord):
     """Ride time to the second, since `duration` is only stored in whole minutes."""
     if ride.checkin_time is None or ride.checkout_time is None:
         return None
     return _round((ride.checkin_time - ride.checkout_time).total_seconds())
+
+
+def _speed_kmh(ride: RideRecord):
+    seconds = _actual_duration_seconds(ride)
+    if ride.distance_meters is None or not seconds:
+        return None
+    return _round((ride.distance_meters / 1000) / (seconds / 3600))
 
 
 def _duration_vs_expected_seconds(ride: RideRecord):
