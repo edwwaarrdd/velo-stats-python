@@ -1,19 +1,78 @@
-# What is this
-TBD
+# Velo Stats
+
+Django app for tracking Velo Antwerp bike-share stations, ride history, and routing between stations.
 
 ## Setup
+
 ```
 docker compose up -d --build
 ```
 
-## Usage
+This starts three services:
+- `api` – Django app served by gunicorn on port `8000`
+- `redis` – broker/result backend for Celery
+- `worker` – Celery worker for background tasks
+
+Verify the app is up and running:
+
 ```
 curl http://localhost:8000/_healthcheck
 ```
 
 Should return a 200 OK response.
 
-## Stop
+Stop everything with:
+
 ```
 docker compose down
 ```
+
+### Configuration
+
+Environment variables (set in `docker-compose.yml`):
+
+| Variable | Default | Description |
+|---|---|---|
+| `DJANGO_SECRET_KEY` | `insecure-dev-key-change-me` | Django secret key |
+| `DJANGO_DEBUG` | `false` | Enable Django debug mode |
+| `DJANGO_ALLOWED_HOSTS` | `*` | Comma-separated allowed hosts |
+| `CELERY_BROKER_URL` | `redis://localhost:6379/0` | Celery broker URL |
+| `CELERY_RESULT_BACKEND` | `redis://localhost:6379/0` | Celery result backend URL |
+
+Data is persisted to a SQLite database at `data/db.sqlite3`.
+
+## API Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/_healthcheck` | Returns `{"message": "ok"}` with a 200 status if the app is up |
+
+## Console Commands
+
+Run against the running `api` container:
+
+```
+docker compose exec api python manage.py <command>
+```
+
+| Command | Description |
+|---|---|
+| `load_stations` | Fetches Velo Antwerp station information from the public GBFS feed and upserts it into the database |
+| `load_rides [--path PATH]` | Loads ride history from a JSON export (defaults to `data/rides.json`) and upserts it into the database |
+| `dispatch_test_task [--message MSG]` | Dispatches a test Celery task that logs a message from the worker, useful for verifying the Celery/Redis setup |
+
+### Verifying the Celery setup
+
+Dispatch a test "hello world" task through the `api` container:
+
+```
+docker compose exec api python manage.py dispatch_test_task --message "hello world"
+```
+
+Then check the `worker` container's logs to confirm the message was picked up and processed:
+
+```
+docker compose logs worker
+```
+
+You should see a log line containing `hello world` from the worker.
