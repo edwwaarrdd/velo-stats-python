@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     "stations",
     "rides",
     "routing",
+    "weather",
     "tasks",
 ]
 
