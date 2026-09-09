@@ -1,0 +1,79 @@
+import json
+import unittest
+from unittest.mock import MagicMock, patch
+
+from routing.models import Coordinate, TravelMode
+from routing.services import OsrmRouteService
+
+SAMPLE_PAYLOAD = {
+    "code": "Ok",
+    "routes": [
+        {
+            "distance": 5432.1,
+            "duration": 987.6,
+        }
+    ],
+}
+
+
+def _fake_response(payload):
+    response = MagicMock()
+    response.read.return_value = json.dumps(payload).encode("utf-8")
+    response.__enter__.return_value = response
+    response.__exit__.return_value = False
+    return response
+
+
+class OsrmRouteServiceTests(unittest.TestCase):
+    def setUp(self):
+        self.origin = Coordinate(lat=51.21782, lon=4.42065)
+        self.destination = Coordinate(lat=51.22, lon=4.41)
+
+    @patch("routing.services.urllib.request.urlopen")
+    def test_get_route_parses_payload_into_route(self, mock_urlopen):
+        mock_urlopen.return_value = _fake_response(SAMPLE_PAYLOAD)
+        service = OsrmRouteService()
+
+        route = service.get_route(self.origin, self.destination, TravelMode.FOOT)
+
+        self.assertEqual(route.distance_meters, 5432.1)
+        self.assertEqual(route.duration_seconds, 987.6)
+
+    @patch("routing.services.urllib.request.urlopen")
+    def test_get_route_requests_foot_profile_with_lon_lat_ordering(self, mock_urlopen):
+        mock_urlopen.return_value = _fake_response(SAMPLE_PAYLOAD)
+        service = OsrmRouteService(
+            base_url="https://example.invalid", timeout=5.0
+        )
+
+        service.get_route(self.origin, self.destination, TravelMode.FOOT)
+
+        mock_urlopen.assert_called_once_with(
+            "https://example.invalid/route/v1/foot/"
+            "4.42065,51.21782;4.41,51.22?overview=false",
+            timeout=5.0,
+        )
+
+    @patch("routing.services.urllib.request.urlopen")
+    def test_get_route_requests_bike_profile(self, mock_urlopen):
+        mock_urlopen.return_value = _fake_response(SAMPLE_PAYLOAD)
+        service = OsrmRouteService(base_url="https://example.invalid")
+
+        service.get_route(self.origin, self.destination, TravelMode.BIKE)
+
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("/route/v1/bike/", called_url)
+
+    @patch("routing.services.urllib.request.urlopen")
+    def test_get_route_raises_when_osrm_reports_error(self, mock_urlopen):
+        mock_urlopen.return_value = _fake_response(
+            {"code": "NoRoute", "message": "Impossible route between points"}
+        )
+        service = OsrmRouteService()
+
+        with self.assertRaises(RuntimeError):
+            service.get_route(self.origin, self.destination, TravelMode.FOOT)
+
+
+if __name__ == "__main__":
+    unittest.main()
