@@ -60,6 +60,9 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_ROUTES = {
+    "tasks.tasks.check_ride_distance": {"queue": "ride_distance_checks"},
+}
 
 LOGGING = {
     "version": 1,
