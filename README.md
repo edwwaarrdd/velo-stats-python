@@ -50,6 +50,7 @@ Data is persisted to a SQLite database at `data/db.sqlite3`.
 | `GET` | `/_healthcheck` | Returns `{"message": "ok"}` with a 200 status if the app is up |
 | `GET` | `/rides/` | Returns every ride with its basic info, distance (from the cached station route), speed (distance ÷ duration), and cached weather, most recent first |
 | `GET` | `/rides/summary` | Returns aggregate stats across all rides: total rides, total/average/longest/shortest duration, and total/average distance |
+| `GET` | `/rides/cost` | Returns the cost per ride, using the € 58/year subscription price prorated over the date range from the first to the last ride, plus the equivalent cost and money saved versus paying with day passes (€ 5) or week passes (€ 12) instead |
 
 ## Console Commands
 

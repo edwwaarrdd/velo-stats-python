@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 from django.utils import timezone
 
@@ -206,3 +208,76 @@ class RideListViewTests(TestCase):
 
         ride_ids = [result["ride_id"] for result in response.json()["results"]]
         self.assertEqual(ride_ids, [2, 1])
+
+
+class RideCostViewTests(TestCase):
+    def test_returns_nulls_when_no_rides(self):
+        response = self.client.get("/rides/cost")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "total_rides": 0,
+                "first_ride_date": None,
+                "last_ride_date": None,
+                "date_range_days": None,
+                "subscription_price_eur": 58.0,
+                "prorated_subscription_price_eur": None,
+                "cost_per_ride_eur": None,
+                "day_pass_equivalent_eur": None,
+                "week_pass_equivalent_eur": None,
+                "money_saved_vs_day_passes_eur": None,
+                "money_saved_vs_week_passes_eur": None,
+            },
+        )
+
+    def test_calculates_prorated_cost_and_savings_across_date_range(self):
+        # First two rides share a day (and ISO week), the third ride is nine
+        # days later, in a different ISO week: 10-day range, 2 distinct ride
+        # days, 2 distinct ISO weeks.
+        _make_ride(
+            1, duration=5, origin_station_code="001", destination_station_code="002",
+            checkout_time=timezone.make_aware(datetime.datetime(2026, 1, 1, 12, 0, 0)),
+        )
+        _make_ride(
+            2, duration=5, origin_station_code="001", destination_station_code="002",
+            checkout_time=timezone.make_aware(datetime.datetime(2026, 1, 1, 18, 0, 0)),
+        )
+        _make_ride(
+            3, duration=5, origin_station_code="001", destination_station_code="002",
+            checkout_time=timezone.make_aware(datetime.datetime(2026, 1, 10, 12, 0, 0)),
+        )
+
+        response = self.client.get("/rides/cost")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "total_rides": 3,
+                "first_ride_date": "2026-01-01",
+                "last_ride_date": "2026-01-10",
+                "date_range_days": 10,
+                "subscription_price_eur": 58.0,
+                "prorated_subscription_price_eur": 1.59,
+                "cost_per_ride_eur": 0.53,
+                "day_pass_equivalent_eur": 10.0,
+                "week_pass_equivalent_eur": 24.0,
+                "money_saved_vs_day_passes_eur": 8.41,
+                "money_saved_vs_week_passes_eur": 22.41,
+            },
+        )
+
+    def test_treats_single_ride_as_single_day_range(self):
+        _make_ride(
+            1, duration=5, origin_station_code="001", destination_station_code="002",
+            checkout_time=timezone.make_aware(datetime.datetime(2026, 3, 1, 12, 0, 0)),
+        )
+
+        response = self.client.get("/rides/cost")
+
+        body = response.json()
+        self.assertEqual(body["date_range_days"], 1)
+        self.assertEqual(body["first_ride_date"], "2026-03-01")
+        self.assertEqual(body["last_ride_date"], "2026-03-01")

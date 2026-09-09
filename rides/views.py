@@ -5,6 +5,11 @@ from routing.models import StationRouteRecord, TravelMode
 
 from .models import RideRecord
 
+ANNUAL_SUBSCRIPTION_PRICE_EUR = 58.0
+DAYS_PER_YEAR = 365
+DAY_PASS_PRICE_EUR = 5.0
+WEEK_PASS_PRICE_EUR = 12.0
+
 
 def _round(value):
     return round(value, 2) if value is not None else None
@@ -93,3 +98,62 @@ def ride_list(request):
     )
 
     return JsonResponse({"results": [_serialize_ride(ride) for ride in rides]})
+
+
+def ride_cost(request):
+    total_rides = RideRecord.objects.count()
+
+    if total_rides == 0:
+        return JsonResponse(
+            {
+                "total_rides": 0,
+                "first_ride_date": None,
+                "last_ride_date": None,
+                "date_range_days": None,
+                "subscription_price_eur": ANNUAL_SUBSCRIPTION_PRICE_EUR,
+                "prorated_subscription_price_eur": None,
+                "cost_per_ride_eur": None,
+                "day_pass_equivalent_eur": None,
+                "week_pass_equivalent_eur": None,
+                "money_saved_vs_day_passes_eur": None,
+                "money_saved_vs_week_passes_eur": None,
+            }
+        )
+
+    checkout_times = RideRecord.objects.values_list("checkout_time", flat=True)
+    first_ride_date = min(checkout_times).date()
+    last_ride_date = max(checkout_times).date()
+    date_range_days = (last_ride_date - first_ride_date).days + 1
+
+    prorated_subscription_price = _round(
+        ANNUAL_SUBSCRIPTION_PRICE_EUR * date_range_days / DAYS_PER_YEAR
+    )
+    cost_per_ride = _round(prorated_subscription_price / total_rides)
+
+    ride_days = {checkout_time.date() for checkout_time in checkout_times}
+    ride_weeks = {
+        checkout_time.date().isocalendar()[:2] for checkout_time in checkout_times
+    }
+
+    day_pass_equivalent = _round(len(ride_days) * DAY_PASS_PRICE_EUR)
+    week_pass_equivalent = _round(len(ride_weeks) * WEEK_PASS_PRICE_EUR)
+
+    return JsonResponse(
+        {
+            "total_rides": total_rides,
+            "first_ride_date": first_ride_date,
+            "last_ride_date": last_ride_date,
+            "date_range_days": date_range_days,
+            "subscription_price_eur": ANNUAL_SUBSCRIPTION_PRICE_EUR,
+            "prorated_subscription_price_eur": prorated_subscription_price,
+            "cost_per_ride_eur": cost_per_ride,
+            "day_pass_equivalent_eur": day_pass_equivalent,
+            "week_pass_equivalent_eur": week_pass_equivalent,
+            "money_saved_vs_day_passes_eur": _round(
+                day_pass_equivalent - prorated_subscription_price
+            ),
+            "money_saved_vs_week_passes_eur": _round(
+                week_pass_equivalent - prorated_subscription_price
+            ),
+        }
+    )
