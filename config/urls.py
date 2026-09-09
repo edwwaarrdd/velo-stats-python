@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.urls import path
+from django.urls import include, path
 
 
 def healthcheck(request):
@@ -8,4 +8,5 @@ def healthcheck(request):
 
 urlpatterns = [
     path("_healthcheck", healthcheck),
+    path("rides/", include("rides.urls")),
 ]
