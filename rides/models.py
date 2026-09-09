@@ -89,6 +89,7 @@ class RideRecord(models.Model):
     destination_slot_id = models.CharField(max_length=16)
     checkin_time = models.DateTimeField()
     distance_checked_at = models.DateTimeField(null=True, blank=True)
+    weather_checked_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
