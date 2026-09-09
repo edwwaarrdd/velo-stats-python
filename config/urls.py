@@ -9,4 +9,5 @@ def healthcheck(request):
 urlpatterns = [
     path("_healthcheck", healthcheck),
     path("rides/", include("rides.urls")),
+    path("stations/", include("stations.urls")),
 ]
