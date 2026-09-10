@@ -1,0 +1,11 @@
+# BuildKit prefers <dockerfile>.dockerignore over .dockerignore, which lets the
+# production build copy in the seeded database that the development build skips.
+.git
+.gitignore
+__pycache__
+*.pyc
+.venv
+venv
+.DS_Store
+data/*.sqlite3-shm
+data/*.sqlite3-wal

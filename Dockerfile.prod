@@ -1,0 +1,38 @@
+# Production image.
+#
+# Differences from the development image: the seeded SQLite database is baked in
+# rather than bind-mounted, the app runs as an unprivileged user, and gunicorn
+# is configured for production rather than started with a bare default command.
+#
+# The build context is filtered by Dockerfile.prod.dockerignore, which - unlike
+# the development .dockerignore - lets data/db.sqlite3 through.
+
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_DEBUG=false
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+COPY data/db.sqlite3 /app/data/db.sqlite3
+
+RUN useradd --create-home --uid 10001 app && chown -R app:app /app
+USER app
+
+EXPOSE 8000
+
+# --preload loads the application once in the parent and forks, so the workers
+# share its memory instead of each importing Django separately.
+# --reload, which the development stack uses, is deliberately absent.
+CMD ["gunicorn", "config.wsgi:application", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "4", \
+     "--preload", \
+     "--max-requests", "0", \
+     "--error-logfile", "-"]
