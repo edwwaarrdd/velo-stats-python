@@ -1,6 +1,11 @@
 # Velo Stats
 
-Django app for tracking Velo Antwerp bike-share stations, ride history, and routing between stations.
+Django app for tracking Velo Antwerp bike-share stations, ride history, routing and weather.
+
+Ride history is loaded from a JSON export, station information from the public Velo Antwerp GBFS feed. Each ride is
+then enriched in the background: the cycling distance between its two stations comes from the public OSRM routing
+API, and the weather at its origin station and checkin time comes from the free Open-Meteo archive. The API serves
+the combined data as JSON.
 
 ## Setup
 
