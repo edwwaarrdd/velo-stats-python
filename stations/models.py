@@ -32,8 +32,6 @@ class Station:
 
 
 class StationCollection:
-    """An accessible, queryable collection of Station objects, keyed by station_id."""
-
     def __init__(self, stations: Iterable[Station] = ()):
         self._stations_by_id = {station.station_id: station for station in stations}
 
@@ -54,8 +52,6 @@ class StationCollection:
 
 
 class StationRecord(models.Model):
-    """Database entity persisting a Station."""
-
     station_id = models.CharField(max_length=32, primary_key=True)
     name = models.CharField(max_length=255)
     short_name = models.CharField(max_length=32)

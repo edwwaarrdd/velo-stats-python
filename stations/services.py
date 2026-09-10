@@ -10,8 +10,6 @@ VELO_ANTWERP_STATION_INFORMATION_URL = (
 
 
 class VeloAntwerpStationInformationService(StationInformationService):
-    """Fetches Velo Antwerp station information from the public GBFS feed."""
-
     def __init__(
         self,
         url: str = VELO_ANTWERP_STATION_INFORMATION_URL,

@@ -10,8 +10,6 @@ DEFAULT_RIDES_FILE = Path(settings.BASE_DIR) / "data" / "rides.json"
 
 
 class JsonFileRideService(RideDataSource):
-    """Fetches ride history from a local JSON export of the customer rides."""
-
     def __init__(self, path: str | Path = DEFAULT_RIDES_FILE):
         self._path = Path(path)
 

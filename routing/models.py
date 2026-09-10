@@ -31,8 +31,6 @@ class Route:
 
 
 class StationRouteRecord(models.Model):
-    """Caches the calculated Route between two stations for a given travel mode."""
-
     origin_station = models.ForeignKey(
         StationRecord, on_delete=models.CASCADE, related_name="routes_from"
     )

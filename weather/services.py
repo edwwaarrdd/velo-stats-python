@@ -28,8 +28,6 @@ HOURLY_VARIABLES = ",".join(
 
 
 class OpenMeteoWeatherService(WeatherService):
-    """Fetches historical weather using the free Open-Meteo archive API."""
-
     def __init__(self, base_url: str = OPEN_METEO_ARCHIVE_URL, timeout: float = 10.0):
         self._base_url = base_url
         self._timeout = timeout
@@ -56,9 +54,6 @@ class OpenMeteoWeatherService(WeatherService):
 
 
 class CachedRideWeatherService:
-    """Fetches the weather for a ride's checkin time and origin station, caching
-    results so the same ride's weather is only ever fetched once unless forced."""
-
     def __init__(self, weather_service: WeatherService):
         self._weather_service = weather_service
 

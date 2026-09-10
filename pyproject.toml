@@ -1,5 +1,3 @@
-# Ruff replaces the flake8/isort/black stack: it both lints and formats this project.
-
 [tool.ruff]
 target-version = "py312"
 line-length = 100
@@ -19,6 +17,4 @@ select = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Migrations are generated, so they are neither reformatted by hand nor held to
-# the line length.
 "*/migrations/*" = ["E501"]

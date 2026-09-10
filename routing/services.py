@@ -19,8 +19,6 @@ OSRM_PROFILE_PATHS = {
 
 
 class OsrmRouteService(RouteService):
-    """Calculates routes using the public OSRM routing API."""
-
     def __init__(self, base_url: str = OSRM_BASE_URL, timeout: float = 10.0):
         self._base_url = base_url
         self._timeout = timeout
@@ -45,9 +43,6 @@ class OsrmRouteService(RouteService):
 
 
 class CachedStationRouteService:
-    """Calculates routes between stations, caching results so a route between
-    the same pair of stations and travel mode is only ever calculated once."""
-
     def __init__(self, route_service: RouteService):
         self._route_service = route_service
 

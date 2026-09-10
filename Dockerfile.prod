@@ -1,11 +1,3 @@
-# Production image.
-#
-# Differences from the development image: the seeded SQLite database is baked in
-# rather than bind-mounted, the app runs as an unprivileged user, and gunicorn
-# is configured for production rather than started with a bare default command.
-#
-# The build context is filtered by Dockerfile.prod.dockerignore, which - unlike
-# the development .dockerignore - lets data/db.sqlite3 through.
 
 FROM python:3.13-slim
 

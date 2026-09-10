@@ -51,8 +51,6 @@ class Ride:
 
 
 class RideCollection:
-    """An accessible, queryable collection of Ride objects, keyed by ride_id."""
-
     def __init__(self, rides: Iterable[Ride] = ()):
         self._rides_by_id = {ride.ride_id: ride for ride in rides}
 
@@ -73,8 +71,6 @@ class RideCollection:
 
 
 class RideRecord(models.Model):
-    """Database entity persisting a Ride."""
-
     ride_id = models.BigIntegerField(primary_key=True)
     account_id = models.BigIntegerField()
     status = models.CharField(max_length=32)
