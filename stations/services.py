@@ -24,8 +24,5 @@ class VeloAntwerpStationInformationService(StationInformationService):
         with urllib.request.urlopen(self._url, timeout=self._timeout) as response:
             payload = json.load(response)
 
-        stations = (
-            Station.from_dict(station_data)
-            for station_data in payload["data"]["stations"]
-        )
+        stations = (Station.from_dict(station_data) for station_data in payload["data"]["stations"])
         return StationCollection(stations)

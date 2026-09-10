@@ -115,9 +115,7 @@ def _serialize_ride(ride: RideRecord):
 
 
 def ride_list(request):
-    rides = _with_route(RideRecord.objects.select_related("weather")).order_by(
-        "-checkout_time"
-    )
+    rides = _with_route(RideRecord.objects.select_related("weather")).order_by("-checkout_time")
 
     return JsonResponse({"results": [_serialize_ride(ride) for ride in rides]})
 
@@ -153,9 +151,7 @@ def ride_cost(request):
     cost_per_ride = _round(prorated_subscription_price / total_rides)
 
     ride_days = {checkout_time.date() for checkout_time in checkout_times}
-    ride_weeks = {
-        checkout_time.date().isocalendar()[:2] for checkout_time in checkout_times
-    }
+    ride_weeks = {checkout_time.date().isocalendar()[:2] for checkout_time in checkout_times}
 
     day_pass_equivalent = _round(len(ride_days) * DAY_PASS_PRICE_EUR)
     week_pass_equivalent = _round(len(ride_weeks) * WEEK_PASS_PRICE_EUR)

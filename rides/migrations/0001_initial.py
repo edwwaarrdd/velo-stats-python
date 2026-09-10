@@ -4,31 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='RideRecord',
+            name="RideRecord",
             fields=[
-                ('ride_id', models.BigIntegerField(primary_key=True, serialize=False)),
-                ('account_id', models.BigIntegerField()),
-                ('status', models.CharField(max_length=32)),
-                ('duration', models.IntegerField()),
-                ('bike_number', models.CharField(max_length=32)),
-                ('origin_station_code', models.CharField(max_length=32)),
-                ('origin_station', models.CharField(max_length=255)),
-                ('origin_slot_id', models.CharField(max_length=16)),
-                ('checkout_time', models.DateTimeField()),
-                ('destination_station_code', models.CharField(max_length=32)),
-                ('destination_station', models.CharField(max_length=255)),
-                ('destination_slot_id', models.CharField(max_length=16)),
-                ('checkin_time', models.DateTimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("ride_id", models.BigIntegerField(primary_key=True, serialize=False)),
+                ("account_id", models.BigIntegerField()),
+                ("status", models.CharField(max_length=32)),
+                ("duration", models.IntegerField()),
+                ("bike_number", models.CharField(max_length=32)),
+                ("origin_station_code", models.CharField(max_length=32)),
+                ("origin_station", models.CharField(max_length=255)),
+                ("origin_slot_id", models.CharField(max_length=16)),
+                ("checkout_time", models.DateTimeField()),
+                ("destination_station_code", models.CharField(max_length=32)),
+                ("destination_station", models.CharField(max_length=255)),
+                ("destination_slot_id", models.CharField(max_length=16)),
+                ("checkin_time", models.DateTimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
     ]

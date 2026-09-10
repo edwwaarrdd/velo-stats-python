@@ -64,9 +64,7 @@ class StationCollectionTests(unittest.TestCase):
         self.assertIsNone(self.collection.get("999"))
 
     def test_all_returns_list_of_stations(self):
-        self.assertEqual(
-            sorted(s.station_id for s in self.collection.all()), ["001", "002"]
-        )
+        self.assertEqual(sorted(s.station_id for s in self.collection.all()), ["001", "002"])
 
     def test_deduplicates_by_station_id(self):
         collection = StationCollection([self.station_one, self.station_one])

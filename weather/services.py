@@ -46,14 +46,10 @@ class OpenMeteoWeatherService(WeatherService):
             payload = json.load(response)
 
         if "hourly" not in payload:
-            raise RuntimeError(
-                f"Open-Meteo request failed: {payload.get('reason', payload)}"
-            )
+            raise RuntimeError(f"Open-Meteo request failed: {payload.get('reason', payload)}")
 
         hourly = payload["hourly"]
-        target_hour = at.replace(minute=0, second=0, microsecond=0).strftime(
-            "%Y-%m-%dT%H:00"
-        )
+        target_hour = at.replace(minute=0, second=0, microsecond=0).strftime("%Y-%m-%dT%H:00")
         index = hourly["time"].index(target_hour)
 
         return WeatherObservation.from_open_meteo_hourly(hourly, index)

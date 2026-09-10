@@ -51,16 +51,12 @@ class OpenMeteoWeatherServiceTests(unittest.TestCase):
 
         self.assertEqual(observation.temperature_c, 6.2)
         self.assertEqual(observation.weather_code, 61)
-        self.assertEqual(
-            observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=UTC)
-        )
+        self.assertEqual(observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=UTC))
 
     @patch("weather.services.urllib.request.urlopen")
     def test_get_weather_requests_the_rides_date_and_coordinates(self, mock_urlopen):
         mock_urlopen.return_value = _fake_response(SAMPLE_PAYLOAD)
-        service = OpenMeteoWeatherService(
-            base_url="https://example.invalid", timeout=5.0
-        )
+        service = OpenMeteoWeatherService(base_url="https://example.invalid", timeout=5.0)
 
         service.get_weather(self.location, self.at)
 
@@ -98,9 +94,7 @@ class CachedRideWeatherServiceTests(TestCase):
             checkin_time=datetime(2024, 1, 15, 14, 30, tzinfo=UTC),
         )
         self.location = Coordinate(lat=51.21782, lon=4.42065)
-        self.observation = WeatherObservation.from_open_meteo_hourly(
-            SAMPLE_PAYLOAD["hourly"], 1
-        )
+        self.observation = WeatherObservation.from_open_meteo_hourly(SAMPLE_PAYLOAD["hourly"], 1)
         self.inner_weather_service = MagicMock()
         self.inner_weather_service.get_weather.return_value = self.observation
         self.service = CachedRideWeatherService(self.inner_weather_service)
@@ -158,9 +152,7 @@ class CachedRideWeatherServiceTests(TestCase):
         self.assertEqual(observation, self.observation)
         self.inner_weather_service.get_weather.assert_called_once()
         self.assertEqual(WeatherRecord.objects.count(), 1)
-        self.assertEqual(
-            WeatherRecord.objects.get().temperature_c, self.observation.temperature_c
-        )
+        self.assertEqual(WeatherRecord.objects.get().temperature_c, self.observation.temperature_c)
 
 
 if __name__ == "__main__":

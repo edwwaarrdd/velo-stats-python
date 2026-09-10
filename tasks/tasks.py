@@ -25,9 +25,7 @@ def check_ride_distance(ride_id: int) -> None:
 
     try:
         origin = StationRecord.objects.get(station_id=ride.origin_station_code)
-        destination = StationRecord.objects.get(
-            station_id=ride.destination_station_code
-        )
+        destination = StationRecord.objects.get(station_id=ride.destination_station_code)
     except StationRecord.DoesNotExist:
         logger.error(
             "Cannot check distance for ride %s: unknown station code(s) %s / %s",
@@ -61,9 +59,7 @@ def check_ride_weather(ride_id: int, force: bool = False) -> None:
         return
 
     service = CachedRideWeatherService(OpenMeteoWeatherService())
-    service.get_weather(
-        ride, Coordinate(lat=origin.lat, lon=origin.lon), force=force
-    )
+    service.get_weather(ride, Coordinate(lat=origin.lat, lon=origin.lon), force=force)
 
     ride.weather_checked_at = timezone.now()
     ride.save(update_fields=["weather_checked_at"])

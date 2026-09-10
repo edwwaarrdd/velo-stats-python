@@ -10,7 +10,5 @@ class WeatherService(ABC):
     """Interface for fetching the historical weather at a location and time."""
 
     @abstractmethod
-    def get_weather(
-        self, location: Coordinate, at: datetime
-    ) -> WeatherObservation:
+    def get_weather(self, location: Coordinate, at: datetime) -> WeatherObservation:
         """Fetch the weather observed closest to the given time at the given location."""

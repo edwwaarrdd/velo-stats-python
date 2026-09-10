@@ -4,27 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='StationRecord',
+            name="StationRecord",
             fields=[
-                ('station_id', models.CharField(max_length=32, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('short_name', models.CharField(max_length=32)),
-                ('lat', models.FloatField()),
-                ('lon', models.FloatField()),
-                ('address', models.CharField(max_length=255)),
-                ('post_code', models.CharField(max_length=16)),
-                ('rental_methods', models.JSONField(default=list)),
-                ('capacity', models.IntegerField(default=0)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("station_id", models.CharField(max_length=32, primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("short_name", models.CharField(max_length=32)),
+                ("lat", models.FloatField()),
+                ("lon", models.FloatField()),
+                ("address", models.CharField(max_length=255)),
+                ("post_code", models.CharField(max_length=16)),
+                ("rental_methods", models.JSONField(default=list)),
+                ("capacity", models.IntegerField(default=0)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
     ]

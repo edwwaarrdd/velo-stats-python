@@ -132,9 +132,7 @@ class RideListViewTests(TestCase):
             distance_meters=3000.0,
             duration_seconds=400.0,
         )
-        ride = _make_ride(
-            1, duration=15, origin_station_code="001", destination_station_code="002"
-        )
+        ride = _make_ride(1, duration=15, origin_station_code="001", destination_station_code="002")
         WeatherRecord.objects.create(
             ride=ride,
             temperature_c=18.5,
@@ -278,11 +276,17 @@ class RideListViewTests(TestCase):
         older = timezone.now() - timezone.timedelta(days=1)
         newer = timezone.now()
         _make_ride(
-            1, duration=5, origin_station_code="001", destination_station_code="002",
+            1,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
             checkout_time=older,
         )
         _make_ride(
-            2, duration=5, origin_station_code="001", destination_station_code="002",
+            2,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
             checkout_time=newer,
         )
 
@@ -319,15 +323,24 @@ class RideCostViewTests(TestCase):
         # days later, in a different ISO week: 10-day range, 2 distinct ride
         # days, 2 distinct ISO weeks.
         _make_ride(
-            1, duration=5, origin_station_code="001", destination_station_code="002",
+            1,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
             checkout_time=timezone.make_aware(datetime.datetime(2026, 1, 1, 12, 0, 0)),
         )
         _make_ride(
-            2, duration=5, origin_station_code="001", destination_station_code="002",
+            2,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
             checkout_time=timezone.make_aware(datetime.datetime(2026, 1, 1, 18, 0, 0)),
         )
         _make_ride(
-            3, duration=5, origin_station_code="001", destination_station_code="002",
+            3,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
             checkout_time=timezone.make_aware(datetime.datetime(2026, 1, 10, 12, 0, 0)),
         )
 
@@ -353,7 +366,10 @@ class RideCostViewTests(TestCase):
 
     def test_treats_single_ride_as_single_day_range(self):
         _make_ride(
-            1, duration=5, origin_station_code="001", destination_station_code="002",
+            1,
+            duration=5,
+            origin_station_code="001",
+            destination_station_code="002",
             checkout_time=timezone.make_aware(datetime.datetime(2026, 3, 1, 12, 0, 0)),
         )
 

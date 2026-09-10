@@ -15,9 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         service = (
-            JsonFileRideService(options["path"])
-            if options.get("path")
-            else JsonFileRideService()
+            JsonFileRideService(options["path"]) if options.get("path") else JsonFileRideService()
         )
         collection = service.fetch_rides()
 

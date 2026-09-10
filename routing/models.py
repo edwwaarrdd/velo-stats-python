@@ -39,9 +39,7 @@ class StationRouteRecord(models.Model):
     destination_station = models.ForeignKey(
         StationRecord, on_delete=models.CASCADE, related_name="routes_to"
     )
-    mode = models.CharField(
-        max_length=8, choices=[(mode.value, mode.value) for mode in TravelMode]
-    )
+    mode = models.CharField(max_length=8, choices=[(mode.value, mode.value) for mode in TravelMode])
     distance_meters = models.FloatField()
     duration_seconds = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -56,10 +54,7 @@ class StationRouteRecord(models.Model):
         ]
 
     def __str__(self) -> str:
-        return (
-            f"{self.origin_station_id} -> {self.destination_station_id} "
-            f"({self.mode})"
-        )
+        return f"{self.origin_station_id} -> {self.destination_station_id} ({self.mode})"
 
     def to_route(self) -> Route:
         return Route(

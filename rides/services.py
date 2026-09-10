@@ -19,8 +19,5 @@ class JsonFileRideService(RideDataSource):
         with self._path.open(encoding="utf-8") as f:
             payload = json.load(f)
 
-        rides = (
-            Ride.from_dict(ride_data)
-            for ride_data in payload["data"]["CustomerRides"]
-        )
+        rides = (Ride.from_dict(ride_data) for ride_data in payload["data"]["CustomerRides"])
         return RideCollection(rides)

@@ -34,9 +34,7 @@ class WeatherObservationTests(unittest.TestCase):
         self.assertEqual(observation.wind_direction_degrees, 280)
         self.assertEqual(observation.relative_humidity_percent, 80)
         self.assertEqual(observation.weather_code, 61)
-        self.assertEqual(
-            observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=UTC)
-        )
+        self.assertEqual(observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=UTC))
 
 
 class WeatherRecordTests(unittest.TestCase):

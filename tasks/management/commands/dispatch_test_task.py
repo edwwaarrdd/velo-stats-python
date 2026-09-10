@@ -15,6 +15,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         result = log_test_message.delay(options["message"])
-        self.stdout.write(
-            self.style.SUCCESS(f"Dispatched task {result.id} to the queue.")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Dispatched task {result.id} to the queue."))

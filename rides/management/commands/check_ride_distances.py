@@ -19,7 +19,5 @@ class Command(BaseCommand):
             dispatched_count += 1
 
         self.stdout.write(
-            self.style.SUCCESS(
-                f"Dispatched {dispatched_count} ride distance check task(s)."
-            )
+            self.style.SUCCESS(f"Dispatched {dispatched_count} ride distance check task(s).")
         )

@@ -47,9 +47,7 @@ class WeatherObservation:
 class WeatherRecord(models.Model):
     """Caches the biking-relevant weather observed for a ride's checkin time and origin station."""
 
-    ride = models.OneToOneField(
-        RideRecord, on_delete=models.CASCADE, related_name="weather"
-    )
+    ride = models.OneToOneField(RideRecord, on_delete=models.CASCADE, related_name="weather")
     temperature_c = models.FloatField()
     apparent_temperature_c = models.FloatField()
     precipitation_mm = models.FloatField()

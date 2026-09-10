@@ -5,33 +5,44 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('rides', '0003_riderecord_weather_checked_at'),
+        ("rides", "0003_riderecord_weather_checked_at"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='WeatherRecord',
+            name="WeatherRecord",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('temperature_c', models.FloatField()),
-                ('apparent_temperature_c', models.FloatField()),
-                ('precipitation_mm', models.FloatField()),
-                ('rain_mm', models.FloatField()),
-                ('snowfall_cm', models.FloatField()),
-                ('cloud_cover_percent', models.FloatField()),
-                ('wind_speed_kmh', models.FloatField()),
-                ('wind_gusts_kmh', models.FloatField()),
-                ('wind_direction_degrees', models.FloatField()),
-                ('relative_humidity_percent', models.FloatField()),
-                ('weather_code', models.IntegerField()),
-                ('observed_at', models.DateTimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('ride', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='weather', to='rides.riderecord')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("temperature_c", models.FloatField()),
+                ("apparent_temperature_c", models.FloatField()),
+                ("precipitation_mm", models.FloatField()),
+                ("rain_mm", models.FloatField()),
+                ("snowfall_cm", models.FloatField()),
+                ("cloud_cover_percent", models.FloatField()),
+                ("wind_speed_kmh", models.FloatField()),
+                ("wind_gusts_kmh", models.FloatField()),
+                ("wind_direction_degrees", models.FloatField()),
+                ("relative_humidity_percent", models.FloatField()),
+                ("weather_code", models.IntegerField()),
+                ("observed_at", models.DateTimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "ride",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="weather",
+                        to="rides.riderecord",
+                    ),
+                ),
             ],
         ),
     ]

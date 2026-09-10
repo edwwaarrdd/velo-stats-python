@@ -45,9 +45,7 @@ class OsrmRouteServiceTests(unittest.TestCase):
     @patch("routing.services.urllib.request.urlopen")
     def test_get_route_requests_foot_profile_with_lon_lat_ordering(self, mock_urlopen):
         mock_urlopen.return_value = _fake_response(SAMPLE_PAYLOAD)
-        service = OsrmRouteService(
-            base_url="https://example.invalid", timeout=5.0
-        )
+        service = OsrmRouteService(base_url="https://example.invalid", timeout=5.0)
 
         service.get_route(self.origin, self.destination, TravelMode.FOOT)
 

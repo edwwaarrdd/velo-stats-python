@@ -5,28 +5,54 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('stations', '0001_initial'),
+        ("stations", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='StationRouteRecord',
+            name="StationRouteRecord",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mode', models.CharField(choices=[('foot', 'foot'), ('bike', 'bike')], max_length=8)),
-                ('distance_meters', models.FloatField()),
-                ('duration_seconds', models.FloatField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('destination_station', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='routes_to', to='stations.stationrecord')),
-                ('origin_station', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='routes_from', to='stations.stationrecord')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "mode",
+                    models.CharField(choices=[("foot", "foot"), ("bike", "bike")], max_length=8),
+                ),
+                ("distance_meters", models.FloatField()),
+                ("duration_seconds", models.FloatField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "destination_station",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="routes_to",
+                        to="stations.stationrecord",
+                    ),
+                ),
+                (
+                    "origin_station",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="routes_from",
+                        to="stations.stationrecord",
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('origin_station', 'destination_station', 'mode'), name='unique_station_route_per_mode')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("origin_station", "destination_station", "mode"),
+                        name="unique_station_route_per_mode",
+                    )
+                ],
             },
         ),
     ]

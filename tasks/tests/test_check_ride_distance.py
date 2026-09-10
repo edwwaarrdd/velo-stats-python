@@ -48,9 +48,7 @@ class CheckRideDistanceTests(TestCase):
     @patch("tasks.tasks.OsrmRouteService")
     def test_marks_ride_checked_and_uses_bike_mode(self, mock_osrm_cls):
         mock_osrm = MagicMock()
-        mock_osrm.get_route.return_value = Route(
-            distance_meters=1234.0, duration_seconds=100.0
-        )
+        mock_osrm.get_route.return_value = Route(distance_meters=1234.0, duration_seconds=100.0)
         mock_osrm_cls.return_value = mock_osrm
 
         check_ride_distance.apply(args=[self.ride.ride_id])

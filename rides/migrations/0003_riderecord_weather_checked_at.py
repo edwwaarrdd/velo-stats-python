@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rides', '0002_riderecord_distance_checked_at'),
+        ("rides", "0002_riderecord_distance_checked_at"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='riderecord',
-            name='weather_checked_at',
+            model_name="riderecord",
+            name="weather_checked_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

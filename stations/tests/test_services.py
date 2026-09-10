@@ -67,9 +67,7 @@ class VeloAntwerpStationInformationServiceTests(unittest.TestCase):
 
         service.fetch_stations()
 
-        mock_urlopen.assert_called_once_with(
-            "https://example.invalid/stations.json", timeout=5.0
-        )
+        mock_urlopen.assert_called_once_with("https://example.invalid/stations.json", timeout=5.0)
 
     @patch("stations.services.urllib.request.urlopen")
     def test_fetch_stations_returns_empty_collection_for_no_stations(self, mock_urlopen):

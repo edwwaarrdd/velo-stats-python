@@ -25,9 +25,7 @@ class OsrmRouteService(RouteService):
         self._base_url = base_url
         self._timeout = timeout
 
-    def get_route(
-        self, origin: Coordinate, destination: Coordinate, mode: TravelMode
-    ) -> Route:
+    def get_route(self, origin: Coordinate, destination: Coordinate, mode: TravelMode) -> Route:
         # OSRM expects coordinates as "lon,lat", not "lat,lon".
         url = (
             f"{self._base_url}/{OSRM_PROFILE_PATHS[mode]}/route/v1/{mode.value}/"
@@ -53,9 +51,7 @@ class CachedStationRouteService:
     def __init__(self, route_service: RouteService):
         self._route_service = route_service
 
-    def get_route(
-        self, origin: Station, destination: Station, mode: TravelMode
-    ) -> Route:
+    def get_route(self, origin: Station, destination: Station, mode: TravelMode) -> Route:
         cached = StationRouteRecord.objects.filter(
             origin_station_id=origin.station_id,
             destination_station_id=destination.station_id,
