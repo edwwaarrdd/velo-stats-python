@@ -1,6 +1,6 @@
 import json
 import unittest
-from datetime import datetime, timezone as dt_timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
@@ -40,7 +40,7 @@ def _fake_response(payload):
 class OpenMeteoWeatherServiceTests(unittest.TestCase):
     def setUp(self):
         self.location = Coordinate(lat=51.21782, lon=4.42065)
-        self.at = datetime(2024, 1, 15, 14, 30, tzinfo=dt_timezone.utc)
+        self.at = datetime(2024, 1, 15, 14, 30, tzinfo=UTC)
 
     @patch("weather.services.urllib.request.urlopen")
     def test_get_weather_parses_the_nearest_hour(self, mock_urlopen):
@@ -52,7 +52,7 @@ class OpenMeteoWeatherServiceTests(unittest.TestCase):
         self.assertEqual(observation.temperature_c, 6.2)
         self.assertEqual(observation.weather_code, 61)
         self.assertEqual(
-            observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=dt_timezone.utc)
+            observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=UTC)
         )
 
     @patch("weather.services.urllib.request.urlopen")
@@ -95,7 +95,7 @@ class CachedRideWeatherServiceTests(TestCase):
             destination_station_code="021",
             destination_station="021 - Driekoningen",
             destination_slot_id="2",
-            checkin_time=datetime(2024, 1, 15, 14, 30, tzinfo=dt_timezone.utc),
+            checkin_time=datetime(2024, 1, 15, 14, 30, tzinfo=UTC),
         )
         self.location = Coordinate(lat=51.21782, lon=4.42065)
         self.observation = WeatherObservation.from_open_meteo_hourly(

@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime, timezone as dt_timezone
+from datetime import UTC, datetime
 
 from weather.models import WeatherObservation, WeatherRecord
 
@@ -35,7 +35,7 @@ class WeatherObservationTests(unittest.TestCase):
         self.assertEqual(observation.relative_humidity_percent, 80)
         self.assertEqual(observation.weather_code, 61)
         self.assertEqual(
-            observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=dt_timezone.utc)
+            observation.observed_at, datetime(2024, 1, 15, 14, 0, tzinfo=UTC)
         )
 
 
@@ -53,7 +53,7 @@ class WeatherRecordTests(unittest.TestCase):
             wind_direction_degrees=280,
             relative_humidity_percent=80,
             weather_code=61,
-            observed_at=datetime(2024, 1, 15, 14, 0, tzinfo=dt_timezone.utc),
+            observed_at=datetime(2024, 1, 15, 14, 0, tzinfo=UTC),
         )
 
         observation = record.to_observation()

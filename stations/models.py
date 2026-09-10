@@ -1,5 +1,5 @@
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
-from typing import Iterable, Iterator, Optional
 
 from django.db import models
 
@@ -46,7 +46,7 @@ class StationCollection:
     def __contains__(self, station_id: str) -> bool:
         return station_id in self._stations_by_id
 
-    def get(self, station_id: str) -> Optional[Station]:
+    def get(self, station_id: str) -> Station | None:
         return self._stations_by_id.get(station_id)
 
     def all(self) -> list[Station]:

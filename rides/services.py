@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import Union
 
 from django.conf import settings
 
@@ -13,7 +12,7 @@ DEFAULT_RIDES_FILE = Path(settings.BASE_DIR) / "data" / "rides.json"
 class JsonFileRideService(RideDataSource):
     """Fetches ride history from a local JSON export of the customer rides."""
 
-    def __init__(self, path: Union[str, Path] = DEFAULT_RIDES_FILE):
+    def __init__(self, path: str | Path = DEFAULT_RIDES_FILE):
         self._path = Path(path)
 
     def fetch_rides(self) -> RideCollection:

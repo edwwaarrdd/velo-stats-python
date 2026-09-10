@@ -1,6 +1,6 @@
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Iterable, Iterator, Optional
 
 from django.db import models
 from django.utils import timezone
@@ -65,7 +65,7 @@ class RideCollection:
     def __contains__(self, ride_id: int) -> bool:
         return ride_id in self._rides_by_id
 
-    def get(self, ride_id: int) -> Optional[Ride]:
+    def get(self, ride_id: int) -> Ride | None:
         return self._rides_by_id.get(ride_id)
 
     def all(self) -> list[Ride]:

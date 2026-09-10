@@ -3,9 +3,9 @@ import logging
 from celery import shared_task
 from django.utils import timezone
 
+from rides.models import RideRecord
 from routing.models import Coordinate, TravelMode
 from routing.services import CachedStationRouteService, OsrmRouteService
-from rides.models import RideRecord
 from stations.models import StationRecord
 from weather.services import CachedRideWeatherService, OpenMeteoWeatherService
 

@@ -6,7 +6,7 @@ from django.test import TestCase
 
 from routing.models import Coordinate, Route, StationRouteRecord, TravelMode
 from routing.services import CachedStationRouteService, OsrmRouteService
-from stations.models import Station, StationRecord
+from stations.models import StationRecord
 
 SAMPLE_PAYLOAD = {
     "code": "Ok",

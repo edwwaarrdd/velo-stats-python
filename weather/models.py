@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone as dt_timezone
+from datetime import UTC, datetime
 
 from django.db import models
 from django.utils import timezone
@@ -26,7 +26,7 @@ class WeatherObservation:
     def from_open_meteo_hourly(cls, hourly: dict, index: int) -> "WeatherObservation":
         observed_at = datetime.fromisoformat(hourly["time"][index])
         if timezone.is_naive(observed_at):
-            observed_at = timezone.make_aware(observed_at, dt_timezone.utc)
+            observed_at = timezone.make_aware(observed_at, UTC)
 
         return cls(
             temperature_c=hourly["temperature_2m"][index],

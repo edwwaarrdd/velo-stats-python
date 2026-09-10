@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 from django.db import models
 
 from stations.models import StationRecord
 
 
-class TravelMode(str, Enum):
+class TravelMode(StrEnum):
     FOOT = "foot"
     BIKE = "bike"
 

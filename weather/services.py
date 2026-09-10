@@ -2,8 +2,8 @@ import json
 import urllib.request
 from datetime import datetime
 
-from routing.models import Coordinate
 from rides.models import RideRecord
+from routing.models import Coordinate
 
 from .interfaces import WeatherService
 from .models import WeatherObservation, WeatherRecord
